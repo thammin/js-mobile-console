@@ -8,11 +8,11 @@
 	}
 })(this, function () {
 
-	var containerHtml = '' + 
+	var containerHtml = '' +
 	'<div id="jsmc-collapse"></div>' +
 	'<div id="jsmc-clear">&#xd7</div>' +
 	'<div id="jsmc-commands">&#x2261</div>' +
-	'<div id="jsmc-commands-container"></div>' +	
+	'<div id="jsmc-commands-container"></div>' +
 	'<div id="jsmc-content">' +
 	'	<input id="jsmc-button" type="button" value="Run"/>' +
 	'	<div id="jsmc-log">' +
@@ -100,12 +100,12 @@
 		populateCommandsContainer_: function(){
 			var self = this;
 			for (var i in this.commandsHash){
-				if (this.commandsHash.hasOwnProperty(i)){					
+				if (this.commandsHash.hasOwnProperty(i)){
 					var commandEl = document.createElement('div');
 					commandEl.className = 'jsmc-command';
 					commandEl.innerHTML = i;
 					commandEl.command = this.commandsHash[i];
-					
+
 					var commandElContainer = document.createElement('div');
 					commandElContainer.className = 'jsmc-command-wrapper';
 
@@ -127,7 +127,7 @@
 
 			this.commandsPopulated = true;
 		},
-		
+
 		destroy: function(){
 			var el = document.getElementById('js-mobile-console');
 			el.parentNode.removeChild(el);
@@ -157,7 +157,7 @@
 				this.isCollapsed = true;
 				this.$el.collapseControl.innerHTML = '&#9650;';
 			} else {
-				this.$el.collapseControl.innerHTML = '&#9660;';				
+				this.$el.collapseControl.innerHTML = '&#9660;';
 			}
 		},
 
@@ -210,7 +210,7 @@
 
 		toggleCommands: function(){
 			this.commandsShown = !this.commandsShown;
-			this.$el.commandsContainer.style.display = this.commandsShown ? 
+			this.$el.commandsContainer.style.display = this.commandsShown ?
 				'inline-block' : 'none';
 		},
 
@@ -228,7 +228,7 @@
 					text = JSON.stringify(text);
 				} catch(e){
 					text = e.message;
-					error = true;					
+					error = true;
 				}
 			}
 			return {
@@ -315,11 +315,11 @@
 						args = [e.message];
 						var error = true;
 					}
-				} 
+				}
 
 				return {text: args.join(' '), error: error};
 			}
-		}, 
+		},
 
 		undecorateConsole: function(){
 			var self = this;
@@ -346,7 +346,7 @@
 			}
 		},
 
-		logValue: function(value, error, command){			
+		logValue: function(value, error, command){
 			var logEl = document.createElement('div');
 			logEl.className = 'jsmc-log-el';
 			logEl.innerHTML = logElementHtml;
@@ -360,7 +360,10 @@
 			}
 
 			var logTextEl = logEl.getElementsByClassName('jsmc-log-text')[0];
-			logTextEl.innerHTML = value;
+			var color = value.match(/(\%c).*(rgba\(.*\))/);
+			var time = value.match(/.*(\[WATCHER\]\:).*(\[Digest\]\:).*rgba\(.*\).*\s(\d+)\s(\d+\.*\d+)/);
+			logTextEl.innerHTML = color? (time? time[1] + time[3] + time[2] + time[4] : '↓-----') : value;
+			logTextEl.style.background = color? color[2] : '';
 
 			if (typeof error === 'string'){
 				var logTargetEl = logEl.getElementsByClassName('jsmc-log-target')[0];
